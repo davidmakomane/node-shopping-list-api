@@ -170,3 +170,34 @@ app.put("/items/:id", (req: Request, res: Response) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+
+ // SPRINT 4: Delete a shopping item by ID
+app.delete("/items/:id", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+
+  // Check that the ID is a positive integer
+  if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Item ID must be a positive integer."
+    });
+  }
+
+  // Find the position of the item in the array
+  const itemIndex = items.findIndex((item) => item.id === id);
+
+  // Check whether the item exists
+  if (itemIndex === -1) {
+    return res.status(404).json({
+      success: false,
+      message: "Shopping item not found."
+    });
+  }
+
+  // Remove the item from the array
+  items.splice(itemIndex, 1);
+
+  // Return 204 when deletion succeeds
+  return res.status(204).send();
+});
